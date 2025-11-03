@@ -22,7 +22,6 @@ export default function App() {
   const [data, setData] = useState<EntityStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("home");
-  const [auto, setAuto] = useState(true);
   const [metric, setMetric] = useState<keyof EntityStats>("applications");
   const [showSplash, setShowSplash] = useState(true);
   const [splashTimerDone, setSplashTimerDone] = useState(false);
@@ -48,10 +47,9 @@ export default function App() {
 
   useEffect(() => { load(); }, [scope]);
   useEffect(() => {
-    if (!auto) return;
     const id = setInterval(load, 30000);
     return () => clearInterval(id);
-  }, [auto, scope]);
+  }, [scope]);
 
   useEffect(() => {
     if (tab !== "analytics") return;
@@ -151,7 +149,7 @@ export default function App() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/70 sm:text-xs md:tracking-[0.35em]">AIESEC IN COLOMBO SOUTH</p>
                 <h1 className="text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl">Initiative Groups Dashboard</h1>
                 <p className="text-sm text-white/80 md:text-base">
-                  Celebrate campus impact with live numbers across applications, signups, and approvals. Stay synced with every refresh and rally your entity to the top.
+                  Revive. Rebuild .Reignite
                 </p>
               </div>
             </div>
@@ -167,20 +165,6 @@ export default function App() {
                   <div className="font-semibold text-white">Live telemetry</div>
                   <div className="text-xs uppercase tracking-wide text-white/70">Auto updates every 30 seconds</div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setAuto((v) => !v)}
-                  className={clsx(
-                    "rounded-2xl border-2 px-4 py-2 text-sm font-semibold shadow-lg shadow-black/25 backdrop-blur hover:bg-transparent w-full sm:w-auto",
-                    auto
-                      ? "border-white/40 bg-white/90 text-[#0A3B78] hover:bg-white"
-                      : "border-transparent bg-gradient-to-r from-[#8CC641] to-[#67A928] text-white hover:from-[#7bb536] hover:to-[#5e9624]"
-                  )}
-                >
-                  <RefreshCw className={`mr-2 h-4 w-4 ${auto ? "animate-spin-slow" : ""}`} />
-                  {auto ? "Auto-Refresh" : "Manual mode"}
-                </Button>
               </div>
             </div>
           </div>
