@@ -1,8 +1,6 @@
 
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { SkipForward } from "lucide-react";
 import csLogo from "@/public/cs_logo.jpg";
 
 export default function SplashScreen({ onDone }: { onDone: () => void }) {
@@ -41,9 +39,14 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
             <motion.div className="h-full bg-blue-600" initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: prefersReduced ? 0.4 : 1.6, ease: "easeInOut" }} />
           </motion.div>
 
-          <Button variant="ghost" size="sm" className="mt-4" onClick={onDone}>
-            <SkipForward className="h-4 w-4 mr-2" /> Skip
-          </Button>
+          <motion.div
+            className="mt-4 text-xs uppercase tracking-[0.35em] text-slate-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45, duration: 0.4 }}
+          >
+            Preparing live metrics…
+          </motion.div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

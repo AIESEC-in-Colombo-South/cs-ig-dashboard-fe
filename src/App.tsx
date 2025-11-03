@@ -232,7 +232,7 @@ export default function App() {
               <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <Trophy className="h-5 w-5 text-amber-500" />
                 <h2 className="text-xl font-semibold">Leaderboard</h2>
-                <span className="text-xs text-slate-500">Weights: Apps 0.4 · Signups 0.3 · Approvals 0.3</span>
+                <span className="text-xs text-slate-500">Weights: Apps ×10 · Signups ×5 · Approvals ×30</span>
               </div>
             </div>
             <Leaderboard data={data} weights={DEFAULT_WEIGHTS} />

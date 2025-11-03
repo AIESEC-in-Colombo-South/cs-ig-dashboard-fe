@@ -127,8 +127,8 @@ export default function Leaderboard({ data, weights }: { data: EntityStats[]; we
   const topThree = ranked.slice(0, 3);
   const rest = ranked.slice(3);
   const podiumLayout: Array<{ entry?: RankedEntry; place: 1 | 2 | 3; orderClass?: string }> = [
-    { entry: topThree[1], place: 2, orderClass: "sm:order-1 sm:translate-y-4" },
     { entry: topThree[0], place: 1, orderClass: "sm:order-2 sm:-translate-y-8" },
+    { entry: topThree[1], place: 2, orderClass: "sm:order-1 sm:translate-y-4" },
     { entry: topThree[2], place: 3, orderClass: "sm:order-3 sm:translate-y-8" }
   ];
 
