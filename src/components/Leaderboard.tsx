@@ -6,6 +6,7 @@ import Logo from "@/components/Logo";
 import clsx from "@/utils/clsx";
 import type { EntityStats, Weights } from "@/types";
 import { computeScore } from "@/lib/score";
+import { ENTITY_LABELS } from "@/constants/entities";
 
 type RankedEntry = EntityStats & { score: number };
 
@@ -40,7 +41,7 @@ function formatPlace(place: number) {
 }
 
 function PodiumCard({ entry, place, orderClass, maxScore }: { entry: RankedEntry; place: 1 | 2 | 3; orderClass?: string; maxScore: number }) {
-  const label = entry.entity === "Horizon" ? "Horizon Campus" : entry.entity;
+  const displayLabel = ENTITY_LABELS[entry.entity] ?? entry.entity;
   const styles = podiumStyles[place];
 
   return (
@@ -53,12 +54,12 @@ function PodiumCard({ entry, place, orderClass, maxScore }: { entry: RankedEntry
       <Card className={clsx("overflow-hidden", styles.container)}>
         <CardContent className={clsx("p-6 sm:p-8 flex flex-col gap-5", styles.text)}>
           <div className="flex items-center gap-4">
-            <Logo label={label} size={styles.logo} />
+            <Logo label={displayLabel} size={styles.logo} />
             <div className="text-left">
               <span className={clsx("inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold shadow-sm", styles.highlight)}>
                 {medals[place]} {formatPlace(place)}
               </span>
-              <h3 className={clsx("mt-2 text-2xl font-semibold leading-tight", styles.text)}>{label}</h3>
+              <h3 className={clsx("mt-2 text-2xl font-semibold leading-tight", styles.text)}>{displayLabel}</h3>
             </div>
           </div>
 
@@ -88,7 +89,7 @@ function PodiumCard({ entry, place, orderClass, maxScore }: { entry: RankedEntry
 }
 
 function LeaderboardRow({ entry, place }: { entry: RankedEntry; place: number }) {
-  const label = entry.entity === "Horizon" ? "Horizon Campus" : entry.entity;
+  const label = ENTITY_LABELS[entry.entity] ?? entry.entity;
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       <Card className="bg-white border border-slate-200 shadow-sm">

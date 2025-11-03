@@ -8,6 +8,7 @@ and a comparison chart. Data comes from deterministic dummy APIs so it feels liv
 ## Quick start
 
 ```bash
+cp .env.example .env # or copy manually
 npm i
 npm run start
 # then open the printed local URL (usually http://localhost:5173)
@@ -24,3 +25,9 @@ npm run start
 - Update weights in `src/lib/score.ts` or pass your own from a settings panel.
 - Swap logos in `src/components/Logo.tsx` or replace with <img> tags.
 - Replace dummy API in `src/api/dummy.ts` with your real backend.
+- Configure API endpoints via `.env` (see `.env.example`).
+
+
+39880 - Horizon
+13106 - SLTC
+10231 - KDU

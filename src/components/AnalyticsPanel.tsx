@@ -4,6 +4,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cart
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ENTITY_KEYS, ENTITY_LABELS } from "@/constants/entities";
 import type { EntityDailySeries, EntityKey } from "@/types";
 
 const APPLICATIONS_COLOR = "#2563eb";
@@ -40,7 +41,7 @@ export default function AnalyticsPanel({
   chartMode,
   onChartModeChange,
 }: AnalyticsPanelProps) {
-  const [selectedEntity, setSelectedEntity] = useState<EntityKey>("KDU");
+  const [selectedEntity, setSelectedEntity] = useState<EntityKey>(ENTITY_KEYS[0]);
 
   useEffect(() => {
     if (data.length > 0 && !data.find((d) => d.entity === selectedEntity)) {
@@ -50,7 +51,7 @@ export default function AnalyticsPanel({
 
   const barChartData = useMemo(() => {
     return data.map((series) => ({
-      entity: series.entity === "Horizon" ? "Horizon Campus" : series.entity,
+      entity: ENTITY_LABELS[series.entity] ?? series.entity,
       Applications: series.days.reduce((acc, day) => acc + day.applications, 0),
       Signups: series.days.reduce((acc, day) => acc + day.signups, 0),
     }));
@@ -78,27 +79,37 @@ export default function AnalyticsPanel({
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+        <div className="space-y-1">
           <h2 className="text-xl font-semibold text-slate-900">Engagement Insights</h2>
           <p className="text-sm text-slate-500">Track applications versus signups over time.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={onPrevWeek} disabled={loading && data.length === 0}>
+        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <Button variant="outline" size="sm" onClick={onPrevWeek} disabled={loading && data.length === 0} className="w-full sm:w-auto">
             <ChevronLeft className="mr-2 h-4 w-4" /> Previous week
           </Button>
-          <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 shadow-inner">{weekLabel}</div>
-          <Button variant="outline" size="sm" onClick={onNextWeek} disabled={!canGoForward}>
+          <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 shadow-inner text-center sm:text-left">{weekLabel}</div>
+          <Button variant="outline" size="sm" onClick={onNextWeek} disabled={!canGoForward} className="w-full sm:w-auto">
             Next week <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-2">
-        <Button variant={chartMode === "bar" ? "secondary" : "ghost"} size="sm" onClick={() => onChartModeChange("bar")} className="flex items-center gap-2">
+      <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 sm:justify-start">
+        <Button
+          variant={chartMode === "bar" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => onChartModeChange("bar")}
+          className="flex w-full items-center gap-2 sm:w-auto"
+        >
           <BarChart4 className="h-4 w-4" /> Weekly overview
         </Button>
-        <Button variant={chartMode === "trend" ? "secondary" : "ghost"} size="sm" onClick={() => onChartModeChange("trend")} className="flex items-center gap-2">
+        <Button
+          variant={chartMode === "trend" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => onChartModeChange("trend")}
+          className="flex w-full items-center gap-2 sm:w-auto"
+        >
           <LineChart className="h-4 w-4" /> Daily trend
         </Button>
       </div>
@@ -134,10 +145,10 @@ export default function AnalyticsPanel({
                 <p className="text-sm text-slate-500">Explore the day-by-day movement for a specific entity.</p>
               </div>
               <Tabs value={selectedEntity} onValueChange={(value: string) => setSelectedEntity(value as EntityKey)}>
-                <TabsList className="bg-slate-100">
+                <TabsList className="bg-slate-100 flex flex-wrap justify-center gap-1 sm:justify-start">
                   {data.map((series) => (
                     <TabsTrigger key={series.entity} value={series.entity}>
-                      {series.entity === "Horizon" ? "Horizon Campus" : series.entity}
+                      {ENTITY_LABELS[series.entity] ?? series.entity}
                     </TabsTrigger>
                   ))}
                 </TabsList>

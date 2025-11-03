@@ -8,6 +8,7 @@ const paletteMap: Record<string, { bg: string; text: string; border: string }> =
   kdu: { bg: "bg-blue-100", text: "text-blue-900", border: "border-blue-200" },
   sltc: { bg: "bg-amber-100", text: "text-amber-900", border: "border-amber-200" },
   horizon: { bg: "bg-indigo-100", text: "text-indigo-900", border: "border-indigo-200" },
+  horizoncampus: { bg: "bg-indigo-100", text: "text-indigo-900", border: "border-indigo-200" },
 };
 
 const sizeMap: Record<LogoSize, string> = {

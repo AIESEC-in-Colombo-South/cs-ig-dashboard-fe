@@ -13,8 +13,9 @@ import csLogo from "@/public/cs_logo.jpg";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import type { Scope, EntityStats, EntityDailySeries } from "@/types";
 import { DEFAULT_WEIGHTS } from "@/lib/score";
-import { fetchEntitySnapshot, fetchWeeklySeries } from "@/api/dummy";
+import { fetchEntitySnapshot, fetchWeeklySeries } from "@/api/aiesec";
 import clsx from "@/utils/clsx";
+import { ENTITY_LABELS } from "@/constants/entities";
 
 export default function App() {
   const [scope, setScope] = useState<Scope>("overall");
@@ -33,13 +34,14 @@ export default function App() {
   const weights = DEFAULT_WEIGHTS;
 
   const load = async () => {
-    // TODO: Swap fetchEntitySnapshot with production endpoints when ready.
     setLoading(true);
     try {
       const res = await fetchEntitySnapshot(scope);
       setData(res);
-      setInitialDataReady(true); // Ensure splash only hides after first payload arrives.
+    } catch (error) {
+      console.error("Failed to load entity snapshot", error);
     } finally {
+      setInitialDataReady(true); // Ensure splash only hides after first attempt.
       setLoading(false);
     }
   };
@@ -56,11 +58,14 @@ export default function App() {
     let active = true;
     const run = async () => {
       setWeeklyLoading(true);
-      // TODO: Replace fetchWeeklySeries with production analytics endpoint when ready.
       try {
         const res = await fetchWeeklySeries(weekOffset);
         if (!active) return;
         setWeeklyData(res);
+      } catch (error) {
+        if (active) {
+          console.error("Failed to load weekly analytics", error);
+        }
       } finally {
         if (active) setWeeklyLoading(false);
       }
@@ -131,34 +136,34 @@ export default function App() {
       {showSplash && <SplashScreen onDone={() => setSplashTimerDone(true)} />}
 
       {/* Header */}
-      <header className="mx-auto max-w-6xl px-4 pt-10 md:pt-12">
-        <div className="relative overflow-hidden rounded-3xl border border-[#0A3B78]/30 bg-gradient-to-r from-[#0A3B78] via-[#1354A0] to-[#0E2B5B] text-white shadow-[0_25px_70px_-35px_rgba(8,24,68,0.9)]">
+      <header className="mx-auto max-w-6xl px-4 pt-8 sm:pt-10 md:pt-12">
+        <div className="relative overflow-hidden rounded-2xl border border-[#0A3B78]/30 bg-gradient-to-r from-[#0A3B78] via-[#1354A0] to-[#0E2B5B] text-white shadow-[0_25px_70px_-35px_rgba(8,24,68,0.9)] sm:rounded-3xl">
           <div className="absolute inset-0 opacity-70 mix-blend-screen">
             <div className="absolute -left-24 top-8 h-56 w-56 rounded-full bg-[#8CC641]/30 blur-[110px]" />
             <div className="absolute right-[-60px] bottom-[-80px] h-80 w-80 rounded-full bg-[#1A5FB4]/45 blur-[130px]" />
           </div>
-          <div className="relative flex flex-col gap-8 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-12 md:py-10">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/90 shadow-xl shadow-black/35">
-                <img src={csLogo} alt="AIESEC CS logo" className="h-[90%] object-contain" />
+          <div className="relative flex flex-col gap-8 px-5 py-7 text-center sm:px-6 md:flex-row md:items-center md:justify-between md:px-12 md:py-10 md:text-left">
+            <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:text-left">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/90 shadow-xl shadow-black/35 sm:h-20 sm:w-20">
+                <img src={csLogo} alt="AIESEC CS logo" className="h-[78%] object-contain sm:h-[90%]" />
               </div>
               <div className="max-w-xl space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/70">AIESEC IN COLOMBO SOUTH</p>
-                <h1 className="text-3xl font-semibold leading-tight text-white md:text-4xl">Initiative Groups Dashboard</h1>
-                <p className="text-sm text-white/75 md:text-base">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/70 sm:text-xs md:tracking-[0.35em]">AIESEC IN COLOMBO SOUTH</p>
+                <h1 className="text-2xl font-semibold leading-tight text-white sm:text-3xl md:text-4xl">Initiative Groups Dashboard</h1>
+                <p className="text-sm text-white/80 md:text-base">
                   Celebrate campus impact with live numbers across applications, signups, and approvals. Stay synced with every refresh and rally your entity to the top.
                 </p>
               </div>
             </div>
-            <div className="flex w-full flex-col gap-4 md:w-auto md:items-end">
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="flex w-full flex-col gap-4 items-center md:w-auto md:items-end">
+              <div className="flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:justify-start md:justify-end">
                 <Badge className="bg-[#8CC641] text-[#0A3B78] shadow-sm">Hackathon Live</Badge>
-                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80 shadow-sm">
+                <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white/80 shadow-sm sm:text-xs">
                   Realtime edition · {currentYear}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white/90 shadow-inner backdrop-blur">
+              <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+                <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white/90 shadow-inner backdrop-blur sm:text-left">
                   <div className="font-semibold text-white">Live telemetry</div>
                   <div className="text-xs uppercase tracking-wide text-white/70">Auto updates every 30 seconds</div>
                 </div>
@@ -167,7 +172,7 @@ export default function App() {
                   size="sm"
                   onClick={() => setAuto((v) => !v)}
                   className={clsx(
-                    "rounded-2xl border-2 px-4 py-2 text-sm font-semibold shadow-lg shadow-black/25 backdrop-blur hover:bg-transparent",
+                    "rounded-2xl border-2 px-4 py-2 text-sm font-semibold shadow-lg shadow-black/25 backdrop-blur hover:bg-transparent w-full sm:w-auto",
                     auto
                       ? "border-white/40 bg-white/90 text-[#0A3B78] hover:bg-white"
                       : "border-transparent bg-gradient-to-r from-[#8CC641] to-[#67A928] text-white hover:from-[#7bb536] hover:to-[#5e9624]"
@@ -184,21 +189,21 @@ export default function App() {
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 py-8 md:py-10">
         {/* View toggles */}
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList>
+            <TabsList className="flex flex-wrap justify-center gap-1 sm:justify-start">
               <TabsTrigger value="home">Home</TabsTrigger>
               <TabsTrigger value="scoreboard">Scoreboard</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
           </Tabs>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 rounded-2xl border border-slate-200 bg-white/70 p-1 backdrop-blur">
-              <Button variant={scope === "overall" ? "secondary" : "ghost"} size="sm" onClick={() => setScope("overall")}> <CalendarDays className="mr-1 h-4 w-4"/> Total Numbers</Button>
-              <Button variant={scope === "daily" ? "secondary" : "ghost"} size="sm" onClick={() => setScope("daily")}> <CalendarDays className="mr-1 h-4 w-4"/> Daily Numbers</Button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 bg-white/70 p-1 backdrop-blur">
+              <Button variant={scope === "overall" ? "secondary" : "ghost"} size="sm" onClick={() => setScope("overall")} className="flex-1 sm:flex-none"> <CalendarDays className="mr-1 h-4 w-4"/> Total Numbers</Button>
+              <Button variant={scope === "daily" ? "secondary" : "ghost"} size="sm" onClick={() => setScope("daily")} className="flex-1 sm:flex-none"> <CalendarDays className="mr-1 h-4 w-4"/> Daily Numbers</Button>
             </div>
-            <Button variant="outline" size="sm" onClick={load} disabled={loading}>
+            <Button variant="outline" size="sm" onClick={load} disabled={loading} className="w-full sm:w-auto">
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               {loading ? "Loading" : "Refresh"}
             </Button>
@@ -206,7 +211,7 @@ export default function App() {
         </div>
 
         {/* Stats row */}
-        <div className="mb-8 grid gap-4 md:grid-cols-3">
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {statCards.map((card) => (
             <StatCard
               key={card.key}
@@ -223,11 +228,11 @@ export default function App() {
         <Tabs value={tab} onValueChange={setTab}>
           <TabsContent value="home">
             {/* Leaderboard */}
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <Trophy className="h-5 w-5 text-amber-500" />
                 <h2 className="text-xl font-semibold">Leaderboard</h2>
-                <span className="text-xs text-slate-500">Weights: Apps 0.4 · Signups 0.3 · Approvals 0.3 (demo)</span>
+                <span className="text-xs text-slate-500">Weights: Apps 0.4 · Signups 0.3 · Approvals 0.3</span>
               </div>
             </div>
             <Leaderboard data={data} weights={DEFAULT_WEIGHTS} />
@@ -235,14 +240,20 @@ export default function App() {
             {/* Comparison chart */}
             <div className="mt-6 bg-white border border-slate-200 rounded-2xl">
               <div className="p-5">
-                <div className="flex items-center justify-between mb-3">
+                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5 text-slate-600" />
                     <h3 className="font-semibold">Entity comparison</h3>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
                     {(["applications", "signups", "approvals"] as (keyof EntityStats)[]).map((m) => (
-                      <Button key={m} size="sm" variant={metric === m ? "secondary" : "ghost"} onClick={() => setMetric(m)}>
+                      <Button
+                        key={m}
+                        size="sm"
+                        variant={metric === m ? "secondary" : "ghost"}
+                        onClick={() => setMetric(m)}
+                        className="w-full sm:w-auto"
+                      >
                         {m[0].toUpperCase() + m.slice(1)}
                       </Button>
                     ))}
@@ -250,7 +261,12 @@ export default function App() {
                 </div>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data.map((d) => ({ name: d.entity, Applications: d.applications, Signups: d.signups, Approvals: d.approvals }))}>
+                    <BarChart data={data.map((d) => ({
+                      name: ENTITY_LABELS[d.entity] ?? d.entity,
+                      Applications: d.applications,
+                      Signups: d.signups,
+                      Approvals: d.approvals,
+                    }))}>
                       <XAxis dataKey="name" />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
@@ -284,7 +300,7 @@ export default function App() {
         <footer className="mt-12 border-t border-slate-200 pt-6">
           <div className="flex flex-col items-center gap-2 text-center text-sm text-slate-500 md:flex-row md:justify-between md:text-left">
             <span>&copy; {currentYear} AIESEC in Colombo South · Initiative Groups Dashboard</span>
-            <span className="text-xs text-slate-400">Demo data for KDU · SLTC · Horizon. // TODO: Replace endpoints in <code>src/api/dummy.ts</code>.</span>
+            <span className="text-xs text-slate-400">Live totals synced from alignments API · Horizon · SLTC · KDU</span>
           </div>
         </footer>
       </main>

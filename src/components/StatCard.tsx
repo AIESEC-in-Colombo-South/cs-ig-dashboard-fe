@@ -14,7 +14,7 @@ export default function StatCard({ title, value, hint, icon, loading }: StatCard
   return (
     <Card className="bg-white/90 border border-slate-200 shadow-sm backdrop-blur">
       <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
               <span>{title}</span>
@@ -29,7 +29,7 @@ export default function StatCard({ title, value, hint, icon, loading }: StatCard
             </div>
           </div>
           {icon && (
-            <div className={clsx("rounded-2xl bg-blue-50 text-blue-600 p-3 shadow-inner", loading && "opacity-60")}>
+            <div className={clsx("self-start rounded-2xl bg-blue-50 p-3 text-blue-600 shadow-inner sm:self-auto", loading && "opacity-60")}>
               {icon}
             </div>
           )}

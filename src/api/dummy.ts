@@ -1,5 +1,6 @@
 
 import type { Scope, EntityKey, EntityStats, EntityDailySeries, DailyPoint, EntityMetric } from "@/types";
+import { ENTITY_KEYS } from "@/constants/entities";
 
 function seededRandom(seed: string) {
   let h = 2166136261 >>> 0;
@@ -15,7 +16,7 @@ async function simulateLatency(ms = 420) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const ENTITIES: EntityKey[] = ["KDU", "SLTC", "Horizon"];
+const ENTITIES: EntityKey[] = ENTITY_KEYS;
 
 function buildMetric(scope: Scope, metric: "applications" | "signups" | "approvals", entity: EntityKey, dayKey: string): number {
   const baseMap = {
